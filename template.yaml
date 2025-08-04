@@ -1,0 +1,43 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Reminder system to send barbershop appointment emails
+
+Parameters:
+  SenderEmail:
+    Type: String
+    Description: Verified SES email address
+
+Resources:
+  ReminderLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: BarbershopReminderLambdaRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: SESAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - ses:SendEmail
+                Resource: "*"
+
+  ReminderFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: BarbershopReminderFunction
+      Handler: lambda_function.lambda_handler
+      Role: !GetAtt ReminderLambdaRole.Arn
+      Runtime: python3.11
+      Code:
+        S3Bucket: YOUR_CODEBUILD_OUTPUT_BUCKET  # Replace later or use direct upload
+        S3Key: function.zip
+      Environment:
+        Variables:
+          SENDER_EMAIL: !Ref SenderEmail
