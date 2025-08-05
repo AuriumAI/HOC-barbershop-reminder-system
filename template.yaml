@@ -36,7 +36,7 @@ Resources:
       Role: !GetAtt ReminderLambdaRole.Arn
       Runtime: python3.11
       Code:
-        S3Bucket: YOUR_CODEBUILD_OUTPUT_BUCKET  # Replace later or use direct upload
+        S3Bucket: barbershop-reminder-code-omarsai  # Replace later or use direct upload
         S3Key: function.zip
       Environment:
         Variables:
